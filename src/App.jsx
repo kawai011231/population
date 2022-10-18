@@ -6,6 +6,10 @@ function App() {
   const [prefectures, setPreFectures] = useState([]);
   // チェックされた都道府県一覧
   const [checkedPrefs, setCheckedPrefs] = useState([]);
+  // 都道府県のデータ
+  const [prefData, setPrefData] = useState({});
+  // チェックされた都道府県一覧
+  const [checkedDatas, setCheckedDatas] = useState([]);
 
   useEffect(() => {
     fetch("https://opendata.resas-portal.go.jp/api/v1/prefectures", {
@@ -15,21 +19,57 @@ function App() {
         return res.json();
       })
       .then((data) => {
-        // console.log(data);
         setPreFectures(data.result);
       });
   }, []);
 
   const handleClick = (e) => {
     const prefectureNumber = Number(e.target.value - 1);
+    const prefectureName = prefectures[prefectureNumber].prefName;
     if (checkedPrefs.includes(prefectureNumber)) {
       setCheckedPrefs(checkedPrefs.filter((pref) => pref !== prefectureNumber));
-      console.log(checkedPrefs);
+      setCheckedDatas(
+        checkedDatas.filter(
+          (checkedData) => checkedData.index !== prefectureNumber + 1
+        )
+      );
     } else {
       setCheckedPrefs([...checkedPrefs, prefectureNumber]);
-      console.log(checkedPrefs);
+      setCheckedPrefs([...checkedPrefs, prefectureNumber]);
+      fetch(
+        `https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=${
+          prefectureNumber + 1
+        }`,
+        {
+          headers: { "X-API-KEY": process.env.REACT_APP_API_KEY },
+        }
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          return data.result.data[0].data;
+        })
+        .then((data) => {
+          let arrayData = data.map((item) => {
+            return item.value;
+          });
+          return arrayData;
+        })
+        .then((data) => {
+          setPrefData({
+            index: prefectureNumber + 1,
+            name: prefectureName,
+            data: data,
+          });
+        });
     }
   };
+
+  useEffect(() => {
+    setCheckedDatas([...checkedDatas, prefData]);
+    console.log(checkedDatas);
+  }, [prefData]);
 
   return (
     <div className="App">
