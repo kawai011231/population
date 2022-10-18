@@ -135,6 +135,7 @@ function App() {
         <h1 className={styles.header}>都道府県人口推移グラフ</h1>
       </header>
       <main>
+        <p className={styles.prefTitle}>都道府県</p>
         <ul className={styles.prefWrap}>
           {prefectures.map((prefecture) => (
             <li key={prefecture.prefCode} className={styles.prefElement}>

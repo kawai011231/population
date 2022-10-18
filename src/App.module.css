@@ -5,10 +5,18 @@
   padding: 8px;
 }
 
+.prefTitle {
+  padding-left: 24px;
+  font-size: 24px;
+  margin: 16px 0;
+}
 .prefWrap {
   display: flex;
   flex-wrap: wrap;
   list-style: none;
+  padding: 0;
+  width: 98%;
+  margin: 0 auto;
 }
 .prefElement {
   padding: 8px;
