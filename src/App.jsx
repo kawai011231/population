@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 function App() {
   // 都道府県一覧
   const [prefectures, setPreFectures] = useState([]);
+  // チェックされた都道府県一覧
+  const [checkedPrefs, setCheckedPrefs] = useState([]);
 
   useEffect(() => {
     fetch("https://opendata.resas-portal.go.jp/api/v1/prefectures", {
@@ -18,6 +20,17 @@ function App() {
       });
   }, []);
 
+  const handleClick = (e) => {
+    const prefectureNumber = Number(e.target.value - 1);
+    if (checkedPrefs.includes(prefectureNumber)) {
+      setCheckedPrefs(checkedPrefs.filter((pref) => pref !== prefectureNumber));
+      console.log(checkedPrefs);
+    } else {
+      setCheckedPrefs([...checkedPrefs, prefectureNumber]);
+      console.log(checkedPrefs);
+    }
+  };
+
   return (
     <div className="App">
       <header>
@@ -28,7 +41,11 @@ function App() {
           {prefectures.map((prefecture) => (
             <li key={prefecture.prefCode} className={styles.prefElement}>
               <label>
-                <input type="checkbox" value={prefecture.prefCode} />
+                <input
+                  type="checkbox"
+                  onClick={handleClick}
+                  value={prefecture.prefCode}
+                />
                 {prefecture.prefName}
               </label>
             </li>
