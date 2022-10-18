@@ -1,5 +1,7 @@
 import styles from "./App.module.css";
 import { useEffect, useState } from "react";
+import Highcharts from "highcharts/highstock";
+import HighchartsReact from "highcharts-react-official";
 
 function App() {
   // 都道府県一覧
@@ -71,6 +73,23 @@ function App() {
     console.log(checkedDatas);
   }, [prefData]);
 
+  const options = {
+    title: {
+      text: "総人口推移",
+    },
+    xAxis: {
+      title: {
+        text: "年度",
+      },
+    },
+    yAxis: {
+      title: {
+        text: "人口数",
+      },
+    },
+    series: checkedDatas,
+  };
+
   return (
     <div className="App">
       <header>
@@ -91,6 +110,7 @@ function App() {
             </li>
           ))}
         </ul>
+        <HighchartsReact highcharts={Highcharts} options={options} />
       </main>
     </div>
   );
