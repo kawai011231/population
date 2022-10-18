@@ -4,3 +4,12 @@
   margin: 0;
   padding: 8px;
 }
+
+.prefWrap {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+}
+.prefElement {
+  padding: 8px;
+}
