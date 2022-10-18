@@ -12,6 +12,8 @@ function App() {
   const [prefData, setPrefData] = useState({});
   // チェックされた都道府県一覧
   const [checkedDatas, setCheckedDatas] = useState([]);
+  // カテゴリー
+  const [category, setCategory] = useState([]);
 
   useEffect(() => {
     fetch("https://opendata.resas-portal.go.jp/api/v1/prefectures", {
@@ -22,6 +24,41 @@ function App() {
       })
       .then((data) => {
         setPreFectures(data.result);
+      });
+    fetch(
+      `https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=0`,
+      {
+        headers: { "X-API-KEY": process.env.REACT_APP_API_KEY },
+      }
+    )
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        return data.result.data[0].data;
+      })
+      .then((data) => {
+        const categorieData = data.map((item) => {
+          return item.year;
+        });
+        setCategory(categorieData);
+        const arrayData = data.map((item) => {
+          return item.value;
+        });
+        return arrayData;
+      })
+      .then((data) => {
+        const japanData = [
+          {
+            index: 0,
+            name: "日本",
+            data: data,
+          },
+        ];
+        return japanData;
+      })
+      .then((data) => {
+        setCheckedDatas(data);
       });
   }, []);
 
@@ -36,7 +73,9 @@ function App() {
         )
       );
     } else {
-      setCheckedPrefs([...checkedPrefs, prefectureNumber]);
+      setCheckedDatas(
+        checkedDatas.filter((checkedData) => checkedData.index !== 0)
+      );
       setCheckedPrefs([...checkedPrefs, prefectureNumber]);
       fetch(
         `https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=${
@@ -70,7 +109,6 @@ function App() {
 
   useEffect(() => {
     setCheckedDatas([...checkedDatas, prefData]);
-    console.log(checkedDatas);
   }, [prefData]);
 
   const options = {
@@ -81,6 +119,7 @@ function App() {
       title: {
         text: "年度",
       },
+      categories: category,
     },
     yAxis: {
       title: {
